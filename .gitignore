@@ -1,0 +1,15 @@
+myenv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files
+.env
+**/.env
+
+# Django artifacts
+db.sqlite3
+media/
+staticfiles/

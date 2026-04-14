@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home | E-Shopper{% endblock title %}
+
+{% block content %}
+
+<!-- ================= SLIDER ================= -->
+<section id="slider" style="background:#f8f8f8;padding:20px 0;">
+   <div class="container">
+      <div class="row">
+         <div class="col-sm-12">
+            <div id="slider-carousel" class="carousel slide" data-ride="carousel">
+
+               <ol class="carousel-indicators">
+                  {% for slide in carousel %}
+                  <li data-target="#slider-carousel"
+                      data-slide-to="{{ forloop.counter0 }}"
+                      class="{% if forloop.first %}active{% endif %}">
+                  </li>
+                  {% endfor %}
+               </ol>
+
+               <div class="carousel-inner">
+                  {% for slide in carousel %}
+                  <div class="item {% if forloop.first %}active{% endif %}">
+                     <div class="row" style="display:flex;align-items:center;">
+                        <div class="col-sm-6">
+                           <h1>
+                              <span style="color:#FE980F;">
+                                 {{ slide.heading|slice:":1" }}
+                              </span>{{ slide.heading|slice:"1:" }}
+                           </h1>
+                           <h2>{{ slide.subheading }}</h2>
+                           <p>{{ slide.short_description }}</p>
+                           <a href="{{ slide.carsousel_product.get_url }}">
+                              <button class="btn btn-default get">Get it now</button>
+                           </a>
+                        </div>
+                        <div class="col-sm-6 text-center">
+                           <img src="{{ slide.image.url }}"
+                                class="img-responsive"
+                                alt="{{ slide.heading }}"
+                                style="max-height:350px;margin:auto;">
+                        </div>
+                     </div>
+                  </div>
+                  {% endfor %}
+               </div>
+
+               <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
+                  <i class="fa fa-angle-left"></i>
+               </a>
+               <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
+                  <i class="fa fa-angle-right"></i>
+               </a>
+
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section style="padding:50px 0;background:#fff;">
+   <div class="container">
+      <div class="row text-center">
+         <div class="col-sm-4">
+            <i class="fa fa-truck" style="font-size:40px;color:#FE980F;"></i>
+            <h3>Fast Delivery</h3>
+            <p>Quick & reliable delivery across the country.</p>
+         </div>
+         <div class="col-sm-4">
+            <i class="fa fa-shield" style="font-size:40px;color:#FE980F;"></i>
+            <h3>Secure Payment</h3>
+            <p>100% secure payment & trusted gateways.</p>
+         </div>
+         <div class="col-sm-4">
+            <i class="fa fa-refresh" style="font-size:40px;color:#FE980F;"></i>
+            <h3>Easy Returns</h3>
+            <p>Hassle-free returns within 7 days.</p>
+         </div>
+      </div>
+   </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section style="background:#FE980F;padding:40px 0;color:#fff;">
+   <div class="container">
+      <div class="row text-center">
+         <h2 style="margin-bottom:15px;">Discover Our Latest Products</h2>
+         <p style="margin-bottom:20px;">
+            Explore categories, brands, and best deals curated for you.
+         </p>
+         <a href="{% url 'store' %}" class="btn btn-default get">
+            Visit Store
+         </a>
+      </div>
+   </div>
+</section>
+
+{% endblock content %}

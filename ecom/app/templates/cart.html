@@ -1,0 +1,125 @@
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %}Cart Detail{% endblock title %} 
+{% block content %}
+<section id="cart_items">
+  <div class="container">
+    <div class="breadcrumbs">
+      <ol class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li class="active">Shopping Cart</li>
+      </ol>
+    </div>
+
+    {% if request.session.cart %}
+    <div class="table-responsive cart_info">
+      <table class="table table-condensed">
+        <thead>
+          <tr class="cart_menu">
+            <td class="image">Item</td>
+            <td class="description"></td>
+            <td class="price">Price</td>
+            <td class="quantity">Quantity</td>
+            <td class="total">Total</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key, value in request.session.cart.items %}
+          <tr>
+            <td class="cart_product">
+              <a href="">
+                <img
+                  src="{{ value.image }}"
+                  alt="{{ value.name }}"
+                  width="80"
+                />
+              </a>
+            </td>
+
+            <td class="cart_description">
+              <h4>{{ value.name }}</h4>
+              <p>Product ID: {{ value.product_id }}</p>
+            </td>
+
+            <td class="cart_price">
+              <p>Rs.{{ value.price }}</p>
+            </td>
+
+            <td class="cart_quantity">
+              <div class="cart_quantity_button">
+                <a
+                  class="cart_quantity_up"
+                  href="{% url 'item_increment' value.product_id %}"
+                  >+</a
+                >
+                <input
+                  class="cart_quantity_input"
+                  type="text"
+                  value="{{ value.quantity }}"
+                  size="2"
+                  readonly
+                />
+                <a
+                  class="cart_quantity_down"
+                  href="{% url 'item_decrement' value.product_id %}"
+                  >−</a
+                >
+              </div>
+            </td>
+
+            <td class="cart_total">
+              <p class="cart_total_price">Rs.{{ value.total_price }}</p>
+            </td>
+
+            <td class="cart_delete">
+              <a
+                class="cart_quantity_delete"
+                href="{% url 'item_clear' value.product_id %}"
+              >
+                <i class="fa fa-times"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="text-right mb-3">
+        <a href="{% url 'cart_clear' %}">
+          <button class="btn btn-danger">CLEAR CART</button>
+        </a>
+      </div>
+    </div>
+    <section id="do_action">
+      <div class="container">
+        <div class="heading">
+          <h3>Would you like to do checkout?</h3>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="total_area">
+              <ul>
+                <li>Cart Sub Total <span>Rs.{{ cart_total_amount }}</span></li>
+                <li>Tax <span>Rs.{{ tax }}</span></li>
+                <li>
+                  <strong>Total</strong>
+                  <span><strong>Rs.{{ grand_total }}</strong></span>
+                </li>
+              </ul>
+
+              <a class="btn btn-default check_out" href="{% url 'checkout' %}">Check Out</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% else %}
+    <p class="text-center">Your cart is empty.</p>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock content %}

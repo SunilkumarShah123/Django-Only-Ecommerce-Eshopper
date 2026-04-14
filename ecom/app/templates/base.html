@@ -1,0 +1,329 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>{% block title %}Home | E-Shopper{% endblock %}</title>
+      <!-- Core CSS -->
+      <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+      <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" />
+      <link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet" />
+      <link href="{% static 'css/price-range.css' %}" rel="stylesheet" />
+      <link href="{% static 'css/animate.css' %}" rel="stylesheet" />
+      <link href="{% static 'css/main.css' %}" rel="stylesheet" />
+      <link href="{% static 'css/responsive.css' %}" rel="stylesheet" />
+      <!-- intl-tel-input CSS -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/25.2.1/build/css/intlTelInput.min.css" />
+      <!-- Alertify CSS -->
+      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
+      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
+      <!-- Favicon -->
+      <link rel="shortcut icon" href="{% static 'images/ico/favicon.ico' %}" />
+      <style>
+         .active_nav{
+            background-color: #FE980F;
+            color: white !important;
+         }
+      </style>
+   </head>
+   <body>
+      <header id="header">
+         <!-- ================= TOP BAR ================= -->
+         <div style="background:#f8f8f8;border-bottom:1px solid #eee;padding:6px 0;">
+            <div class="container">
+               <div class="row">
+                  <div class="col-sm-6">
+                     <span style="margin-right:15px;">
+                     <i class="fa fa-phone"></i> +2 95 01 88 821
+                     </span>
+                     <span>
+                     <i class="fa fa-envelope"></i> info@domain.com
+                     </span>
+                  </div>
+                  <div class="col-sm-6 text-right">
+                     <a href="#" style="margin-left:12px;"><i class="fa fa-facebook"></i></a>
+                     <a href="#" style="margin-left:12px;"><i class="fa fa-twitter"></i></a>
+                     <a href="#" style="margin-left:12px;"><i class="fa fa-linkedin"></i></a>
+                     <a href="#" style="margin-left:12px;"><i class="fa fa-google-plus"></i></a>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- ================= MIDDLE HEADER ================= -->
+         <div style="padding:22px 0;">
+            <div class="container">
+               <div class="row" style="display:flex;align-items:center;">
+                  <!-- LOGO -->
+                  <div class="col-sm-3">
+                     <a href="{% url 'home' %}">
+                     <img src="{% static 'images/home/logo.png' %}" style="max-height:55px;">
+                     </a>
+                  </div>
+                  <!-- SEARCH -->
+                  <div class="col-sm-5">
+                     <form action="{% url 'store' %}" method="get">
+                        <div class="input-group">
+                           <input
+                              type="text"
+                              name="search"
+                              class="form-control"
+                              placeholder="Search products..."
+                              value="{{ request.GET.search|default:'' }}"
+                              style="height:42px;"
+                              >
+                           <span class="input-group-btn">
+                           <button class="btn btn-default" style="height:42px;">
+                           <i class="fa fa-search"></i>
+                           </button>
+                           </span>
+                        </div>
+                     </form>
+                  </div>
+                  <!-- ACTIONS -->
+                  <div class="col-sm-4">
+                     <ul class="nav navbar-nav pull-right" style="display:flex;align-items:center;">
+                        <!-- ACCOUNT -->
+                        <li class="dropdown">
+                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                           <i class="fa fa-user"></i> Account <span class="caret"></span>
+                           </a>
+                           <ul class="dropdown-menu">
+                              {% if user.is_authenticated %}
+                              <li>
+                                 <a href="{% url 'profile' %}"><i class="fa fa-user"></i> Account</a>
+                              </li>
+                              <li>
+                                 <a href="{% url 'user_logout' %}">
+                                 <i class="fa fa-sign-out"></i> Log Out
+                                 </a>
+                              </li>
+                              {% else %}
+                              <li>
+                                 <a href="{% url 'user_login' %}">
+                                 <i class="fa fa-sign-in"></i> Login
+                                 </a>
+                              </li>
+                              <li>
+                                 <a href="{% url 'user_register' %}">
+                                 <i class="fa fa-user-plus"></i> Register
+                                 </a>
+                              </li>
+                              {% endif %}
+                           </ul>
+                        </li>
+                        <!-- CART -->
+                        <li class="dropdown" style="margin-left:10px;">
+                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                           <i class="fa fa-shopping-cart"></i>
+                           Cart
+                           <span style="
+                              background:#FE980F;
+                              color:#fff;
+                              padding:2px 6px;
+                              border-radius:50%;
+                              font-size:11px;
+                              margin-left:4px;">
+                           {% if request.session.cart %}
+                           {{ request.session.cart|length }}
+                           {% else %}
+                           0
+                           {% endif %}
+                           </span>
+                           <span class="caret"></span>
+                           </a>
+                           <ul class="dropdown-menu">
+                              <li><a href="{% url 'cart_detail' %}">View Cart</a></li>
+                              <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- ================= NAVIGATION ================= -->
+         <div style="border-top:1px solid #eee;">
+            <div class="container">
+               <ul class="nav navbar-nav">
+                  <li class="{% if request.path == '/' %}active_nav{% endif %}">
+                     <a href="{% url 'home' %}">Home</a>
+                  </li>
+                  <li class="{% if request.path == '/store/' %}active_nav{% endif %}">
+                     <a href="{% url 'store' %}">Shop</a>
+                  </li>
+                  <li class="{% if request.path == '/contact/' %}active_nav{% endif %}">
+                     <a href="{% url 'contact' %}">Contact</a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </header>
+      {% block content %}{% endblock %}
+      <!-- Footer remains unchanged -->
+      <footer id="footer">
+         <!-- ... (your original footer code unchanged) ... -->
+         <div class="footer-top">
+            <div class="container">
+               <div class="row">
+                  <div class="col-sm-2">
+                     <div class="companyinfo">
+                        <h2><span>e</span>-shopper</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,sed do eiusmod tempor</p>
+                     </div>
+                  </div>
+                  <div class="col-sm-7">
+                     <div class="col-sm-3">
+                        <div class="video-gallery text-center">
+                           <a href="#">
+                              <div class="iframe-img">
+                                 <img src="{% static 'images/home/iframe1.png' %}" alt="" />
+                              </div>
+                              <div class="overlay-icon">
+                                 <i class="fa fa-play-circle-o"></i>
+                              </div>
+                           </a>
+                           <p>Circle of Hands</p>
+                           <h2>24 DEC 2014</h2>
+                        </div>
+                     </div>
+                     <div class="col-sm-3">
+                        <div class="video-gallery text-center">
+                           <a href="#">
+                              <div class="iframe-img">
+                                 <img src="{% static 'images/home/iframe2.png' %}" alt="" />
+                              </div>
+                              <div class="overlay-icon">
+                                 <i class="fa fa-play-circle-o"></i>
+                              </div>
+                           </a>
+                           <p>Circle of Hands</p>
+                           <h2>24 DEC 2014</h2>
+                        </div>
+                     </div>
+                     <div class="col-sm-3">
+                        <div class="video-gallery text-center">
+                           <a href="#">
+                              <div class="iframe-img">
+                                 <img src="{% static 'images/home/iframe3.png' %}" alt="" />
+                              </div>
+                              <div class="overlay-icon">
+                                 <i class="fa fa-play-circle-o"></i>
+                              </div>
+                           </a>
+                           <p>Circle of Hands</p>
+                           <h2>24 DEC 2014</h2>
+                        </div>
+                     </div>
+                     <div class="col-sm-3">
+                        <div class="video-gallery text-center">
+                           <a href="#">
+                              <div class="iframe-img">
+                                 <img src="{% static 'images/home/iframe4.png' %}" alt="" />
+                              </div>
+                              <div class="overlay-icon">
+                                 <i class="fa fa-play-circle-o"></i>
+                              </div>
+                           </a>
+                           <p>Circle of Hands</p>
+                           <h2>24 DEC 2014</h2>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-3">
+                     <div class="address">
+                        <img src="{% static 'images/home/map.png' %}" alt="" />
+                        <p>505 S Atlantic Ave Virginia Beach, VA(Virginia)</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="footer-widget">
+            <div class="container">
+               <div class="row">
+                  <div class="col-sm-2">
+                     <div class="single-widget">
+                        <h2>Service</h2>
+                        <ul class="nav nav-pills nav-stacked">
+                           <li><a href="#">Online Help</a></li>
+                           <li><a href="#">Contact Us</a></li>
+                           <li><a href="#">Order Status</a></li>
+                           <li><a href="#">Change Location</a></li>
+                           <li><a href="#">FAQ’s</a></li>
+                        </ul>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="single-widget">
+                        <h2>Quock Shop</h2>
+                        <ul class="nav nav-pills nav-stacked">
+                           <li><a href="#">T-Shirt</a></li>
+                           <li><a href="#">Mens</a></li>
+                           <li><a href="#">Womens</a></li>
+                           <li><a href="#">Gift Cards</a></li>
+                           <li><a href="#">Shoes</a></li>
+                        </ul>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="single-widget">
+                        <h2>Policies</h2>
+                        <ul class="nav nav-pills nav-stacked">
+                           <li><a href="#">Terms of Use</a></li>
+                           <li><a href="#">Privecy Policy</a></li>
+                           <li><a href="#">Refund Policy</a></li>
+                           <li><a href="#">Billing System</a></li>
+                           <li><a href="#">Ticket System</a></li>
+                        </ul>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="single-widget">
+                        <h2>About Shopper</h2>
+                        <ul class="nav nav-pills nav-stacked">
+                           <li><a href="#">Company Information</a></li>
+                           <li><a href="#">Careers</a></li>
+                           <li><a href="#">Store Location</a></li>
+                           <li><a href="#">Affillate Program</a></li>
+                           <li><a href="#">Copyright</a></li>
+                        </ul>
+                     </div>
+                  </div>
+                  <div class="col-sm-3 col-sm-offset-1">
+                     <div class="single-widget">
+                        <h2>About Shopper</h2>
+                        <form action="#" class="searchform">
+                           <input type="text" placeholder="Your email address" />
+                           <button type="submit" class="btn btn-default">
+                           <i class="fa fa-arrow-circle-o-right"></i>
+                           </button>
+                           <p>Get the most recent updates from <br />our site and be updated your self...</p>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="footer-bottom">
+            <div class="container">
+               <div class="row">
+                  <p class="pull-left">Copyright © 2013 E-SHOPPER Inc. All rights reserved.</p>
+                  <p class="pull-right">Designed by <span><a target="_blank" href="http://www.themeum.com">Themeum</a></span></p>
+               </div>
+            </div>
+         </div>
+      </footer>
+      <!-- Scripts -->
+      <script src="{% static 'js/jquery.js' %}"></script>
+      <script src="{% static 'js/bootstrap.min.js' %}"></script>
+      <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/25.2.1/build/js/intlTelInput.min.js"></script>
+      <script src="{% static 'js/phone.js' %}"></script>
+      {% include 'includes/messages.html' %}
+      <script src="{% static 'js/jquery.scrollUp.min.js' %}"></script>
+      <script src="{% static 'js/price-range.js' %}"></script>
+      <script src="{% static 'js/jquery.prettyPhoto.js' %}"></script>
+      <script src="{% static 'js/main.js' %}"></script>
+   </body>
+</html>

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}My Profile | E-Shopper{% endblock %}
+{% load static %}
+{% block content %}
+<section style="background:#f5f5f5;padding:40px 0;">
+  <div class="container">
+    <div class="row">
+
+      <!-- PROFILE INFO -->
+      <div class="col-sm-4">
+        <div style="
+          background:#fff;
+          padding:25px;
+          border-radius:6px;
+          box-shadow:0 0 10px rgba(0,0,0,0.08);
+        ">
+          <h4 class="text-center" style="margin-bottom:20px;">
+            <i class="fa fa-user"></i> My Profile
+          </h4>
+
+          <table class="table table-bordered">
+            <tr>
+              <th style="width:40%;">Username</th>
+              <td>{{ request.user.username }}</td>
+            </tr>
+            <tr>
+              <th>Email</th>
+              <td>{{ request.user.email }}</td>
+            </tr>
+          </table>
+
+          <div class="text-center" style="margin-top:20px;">
+            <a href="{% url 'old_pass_change' %}"
+               class="btn"
+               style="background:#FE980F;color:#fff;width:100%;">
+              <i class="fa fa-lock"></i> Change Password
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDER DETAILS -->
+      <div class="col-sm-8">
+        <div style="
+          background:#fff;
+          padding:25px;
+          border-radius:6px;
+          box-shadow:0 0 10px rgba(0,0,0,0.08);
+        ">
+          <h4 style="margin-bottom:20px;">
+            <i class="fa fa-shopping-bag"></i> My Orders
+          </h4>
+
+          {% if order %}
+          <div style="overflow-x:auto;">
+            <table class="table table-bordered table-hover">
+              <thead style="background:#FE980F;color:#fff;">
+                <tr>
+                  <th>#</th>
+                  <th>Product</th>
+                  <th>Image</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in order %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ order.product }}</td>
+                  <td>
+                    <img src="{{ order.image }}"
+                         style="width:50px;height:50px;object-fit:cover;">
+                  </td>
+                  <td>{{ order.quantity }}</td>
+                  <td>Rs. {{ order.price }}</td>
+                  <td><strong>Rs. {{ order.total }}</strong></td>
+                  <td>
+                    {% if order.is_pay %}
+                      <span style="color:green;font-weight:600;">Paid</span>
+                    {% else %}
+                    <a href="{% url 'initiate_khalti_payment' order.id %}" style="text-decoration:none;">
+  <span style="color:red;font-weight:600;">
+    Pay:
+    <img src="{% static 'images/khalti.png' %}" alt="Khalti" style="height:20px;">
+  </span>
+</a>
+                      
+                    {% endif %}
+                  </td>
+                  <td>{{ order.date|date:"d M Y" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+            <p style="text-align:center;color:#777;">
+              You have not placed any orders yet.
+            </p>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

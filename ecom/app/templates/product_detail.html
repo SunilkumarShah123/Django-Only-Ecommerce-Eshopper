@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block title %}Product Detail{% endblock %}
+{% block content %}
+
+<section style="padding:40px 0;background:#f8f9fa;">
+  <div style="
+    width:90%;
+    margin:auto;
+    background:#ffffff;
+    padding:30px;
+    border-radius:8px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  ">
+
+    <div style="display:flex;gap:30px;flex-wrap:wrap;">
+
+      <!-- PRODUCT IMAGE -->
+      <div style="flex:1;min-width:300px;">
+        <img src="{{ single_product.images.url }}" style="
+          width:100%;
+          border-radius:8px;
+          border:1px solid #eee;
+          box-shadow:0 4px 10px rgba(0,0,0,0.05);
+        ">
+      </div>
+
+      <!-- PRODUCT DETAILS -->
+      <div style="flex:1;min-width:300px;">
+        <h2 style="font-weight:600;margin-bottom:10px;">
+          {{ single_product.product_name }}
+        </h2>
+
+        {% if comment_count <= 0 %}
+        <div style="color:#f39c12;font-size:18px;margin-bottom:8px;">
+         
+          <span style="color:#777;font-size:14px;">No reviews</span>
+        </div>
+        {% else %}
+        <div style="color:#f39c12;font-size:18px;margin-bottom:8px;">
+          ★★★★☆
+          <span style="color:#777;font-size:14px;">
+            ({{ comment_count }} reviews)
+          </span>
+        </div>
+        {% endif %}
+
+        <p style="
+          font-size:26px;
+          color:#28a745;
+          font-weight:600;
+          margin:15px 0;
+        ">
+          Rs.{{ single_product.price }}
+        </p>
+
+        <p style="
+          color:#555;
+          line-height:1.7;
+          margin-bottom:25px;
+        ">
+          {{ single_product.description }}
+        </p>
+
+        <!-- CART ACTIONS -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+
+          {% if single_product.id|stringformat:"s" in cart_product_ids %}
+          <button class="btn btn-warning" disabled style="padding:10px 18px;">
+            <i class="fa fa-check me-1"></i> Added to Cart
+          </button>
+
+          <a href="{% url 'cart_detail' %}" class="btn btn-info" style="padding:10px 18px;">
+            <i class="fa fa-eye me-1"></i> View Cart
+          </a>
+          {% else %}
+          <a href="{% url 'cart_add' single_product.id %}"
+             class="btn btn-success"
+             style="padding:10px 18px;">
+            <i class="fa fa-shopping-cart me-1"></i> Add to Cart
+          </a>
+
+          <a href="{% url 'cart_detail' %}"
+             class="btn btn-info"
+             style="padding:10px 18px;">
+            <i class="fa fa-eye me-1"></i> View Cart
+          </a>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS SECTION -->
+    <div style="margin-top:50px;">
+      <h4 style="
+        margin-bottom:20px;
+        font-weight:600;
+        border-bottom:2px solid #FE980F;
+        display:inline-block;
+        padding-bottom:6px;
+      ">
+        Customer Reviews ({{ comment_count }})
+      </h4>
+
+      {% if comments %}
+        {% for i in comments %}
+        <div style="
+          background:#ffffff;
+          border:1px solid #eee;
+          border-radius:6px;
+          padding:15px;
+          margin-bottom:12px;
+          box-shadow:0 2px 6px rgba(0,0,0,0.05);
+        ">
+          <p style="margin-bottom:6px;color:#333;">
+            {{ i.comment }}
+          </p>
+          <small style="color:#777;">
+            By <strong>{{ i.user.username }}</strong> • {{ i.created_at|timesince }} ago
+          </small>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p style="color:#777;">No reviews on this product yet.</p>
+      {% endif %}
+
+      <!-- COMMENT FORM -->
+      {% if user.is_authenticated %}
+      <div style="
+        margin-top:30px;
+        background:#f9f9f9;
+        padding:20px;
+        border-radius:6px;
+        border:1px solid #eee;
+      ">
+        <form action="" method="POST">
+          {% csrf_token %}
+          <textarea
+            class="form-control"
+            name="comment"
+            placeholder="Write your review..."
+            style="margin-bottom:12px;min-height:90px;"
+          ></textarea>
+          <button type="submit" class="btn btn-primary">
+            Submit Review
+          </button>
+        </form>
+      </div>
+      {% else %}
+      <p style="margin-top:20px;">
+        Please <a href="{% url 'user_login' %}" style="color:#FE980F;font-weight:600;">Login</a>
+        to write a review.
+      </p>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

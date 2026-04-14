@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Change Password | E-Shopper{% endblock %}
+{% block content %}
+<section style="background:#f5f5f5;padding:40px 0;">
+  <div class="container">
+    <div class="row">
+
+      <div class="col-sm-4 col-sm-offset-4">
+        <div style="
+          background:#fff;
+          padding:30px;
+          border-radius:4px;
+          box-shadow:0 0 8px rgba(0,0,0,0.1);
+        ">
+
+          <h3 class="text-center">
+            <i class="fa fa-lock"></i> Change Password
+          </h3>
+
+          <form method="post">
+            {% csrf_token %}
+
+            <!-- OLD PASSWORD -->
+            <div class="form-group">
+              {{ form.old_password.label_tag }}
+              {{ form.old_password }}
+              {% if form.old_password.errors %}
+                <p class="text-danger">
+                  {{ form.old_password.errors|striptags }}
+                </p>
+              {% endif %}
+            </div>
+
+            <!-- NEW PASSWORD -->
+            <div class="form-group">
+              {{ form.new_password1.label_tag }}
+              {{ form.new_password1 }}
+              {% if form.new_password1.errors %}
+                <p class="text-danger">
+                  {{ form.new_password1.errors|striptags }}
+                </p>
+              {% endif %}
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+            <div class="form-group">
+              {{ form.new_password2.label_tag }}
+              {{ form.new_password2 }}
+              {% if form.new_password2.errors %}
+                <p class="text-danger">
+                  {{ form.new_password2.errors|striptags }}
+                </p>
+              {% endif %}
+            </div>
+
+            <!-- NON FIELD ERRORS -->
+            {% if form.non_field_errors %}
+              <p class="text-danger">
+                {{ form.non_field_errors|striptags }}
+              </p>
+            {% endif %}
+
+            <button type="submit"
+              class="btn btn-block"
+              style="background:#FE980F;color:#fff;">
+              Update Password
+            </button>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

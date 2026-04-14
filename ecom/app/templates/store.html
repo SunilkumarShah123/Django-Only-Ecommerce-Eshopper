@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Store{% endblock title %}
+{% block content %}
+
+<section style="padding:30px 0;background:#f5f5f5;">
+   <div class="container">
+      <div class="row">
+
+         <!-- SIDEBAR -->
+         <div class="col-sm-3">
+            <div class="left-sidebar"
+               style="background:#fff;padding:15px;border-radius:8px;
+               box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+
+               <h2 style="font-size:18px;margin-bottom:15px;font-weight:600;">
+                  Category
+               </h2>
+
+               {% for i in cate %}
+               <div class="panel-group category-products"
+                  id="accordion-{{ i.id }}"
+                  style="margin-bottom:6px;">
+
+                  <div class="panel panel-default"
+                     style="border:none;box-shadow:none;">
+
+                     <div class="panel-heading"
+                        style="padding:8px 10px;background:#fafafa;border-radius:4px;">
+
+                        <h4 class="panel-title"
+                           style="font-size:14px;margin:0;">
+                           <a data-toggle="collapse"
+                              data-parent="accordion"
+                              href="#{{i.slug}}"
+                              style="display:flex;justify-content:space-between;
+                              align-items:center;text-decoration:none;color:#333;">
+                              {{ i.name }}
+                              <i class="fa fa-plus"></i>
+                           </a>
+                        </h4>
+                     </div>
+
+                     <div id="{{ i.slug }}" class="panel-collapse collapse">
+                        <div class="panel-body" style="padding:8px 12px;">
+                           <ul style="padding-left:15px;margin:0;">
+                              {% for sub in i.sub_category.all %}
+                              <li style="margin-bottom:6px;">
+                                 <a href="/store/{{ i.slug }}/{{ sub.sub_slug }}/"
+                                    style="color:#555;text-decoration:none;">
+                                    {{ sub.subname }}
+                                 </a>
+                              </li>
+                              {% empty %}
+                              <li style="color:#999;">No subcategories</li>
+                              {% endfor %}
+                           </ul>
+                        </div>
+                     </div>
+
+                  </div>
+               </div>
+               {% endfor %}
+
+               <!-- BRANDS -->
+               <div class="brands_products" style="margin-top:25px;">
+                  <h2 style="font-size:18px;font-weight:600;">Brands</h2>
+                  <ul class="nav nav-pills nav-stacked">
+                     {% for b in brands %}
+                     <li style="margin-bottom:6px;">
+                        <a href="?brand={{b.brand_slug}}"
+                           style="display:flex;justify-content:space-between;
+                           color:#555;">
+                           {{ b.title }}
+                           <span>({{ b.product_set.count }})</span>
+                        </a>
+                     </li>
+                     {% endfor %}
+                  </ul>
+               </div>
+
+               <!-- PRICE RANGE -->
+               <div class="price-range" style="margin-top:25px;">
+                  <div style="background:#fff;padding:15px;border-radius:8px;">
+                     <h2 style="font-size:18px;font-weight:600;">Price Range</h2>
+
+                     <form method="get">
+                        <input type="range"
+                           min="{{ min_price.price__min }}"
+                           max="{{ max_price.price__max }}"
+                           value="{{ filtered_price|default:max_price.price__max }}"
+                           name="FilterPrice"
+                           style="width:100%;accent-color:#ff9800;"
+                           oninput="priceOutput.value=this.value">
+
+                        <div style="margin-top:10px;">
+                           <input type="number" id="priceOutput"
+                              value="{{ filtered_price|default:max_price.price__max }}"
+                              readonly
+                              style="width:100%;padding:6px;border:1px solid #ddd;
+                              border-radius:4px;background:#f9f9f9;">
+                        </div>
+
+                        <button type="submit"
+                           style="margin-top:12px;width:100%;padding:10px;
+                           background:#ff9800;color:#fff;border:none;
+                           border-radius:6px;font-weight:600;">
+                           Filter
+                        </button>
+                     </form>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+
+         <!-- PRODUCTS -->
+         <div class="col-sm-9">
+            <div class="features_items">
+
+               <h2 class="title text-center"
+                  style="margin-bottom:25px;font-weight:600;">
+                  {% if request.GET.search %}
+                     Searched for "{{ request.GET.search }}"
+                  {% else %}
+                     Featured Items
+                  {% endif %}
+               </h2>
+
+               <div class="row">
+
+               {% if selected_page %}
+               {% for i in selected_page %}
+
+                  <div class="col-sm-4">
+                     <div style="
+                        height:440px;
+                        background:#fff;
+                        border-radius:8px;
+                        padding:12px;
+                        margin-bottom:20px;
+                        box-shadow:0 2px 10px rgba(0,0,0,0.05);
+                        display:flex;
+                        flex-direction:column;
+                        justify-content:space-between;
+                     ">
+                        <div class="text-center">
+                           <a href="{{ i.get_url }}">
+                              <img src="{{ i.images.url }}"
+                                 alt="{{ i.product_name }}"
+                                 style="width:100%;height:200px;
+                                 object-fit:contain;margin-bottom:10px;">
+                           </a>
+                           <h4 style="color:#ff9800;font-weight:600;">
+                              Rs.{{ i.price }}
+                           </h4>
+                           <p style="min-height:40px;font-size:14px;">
+                              {{ i.product_name }}
+                           </p>
+                        </div>
+
+                        <a href="{{ i.get_url }}"
+                           class="btn btn-primary btn-block"
+                           style="border-radius:6px;">
+                           <i class="fa fa-eye"></i> View Details
+                        </a>
+                     </div>
+                  </div>
+
+               {% endfor %}
+
+               <!-- PAGINATION -->
+               <div class="col-sm-12">
+                  <nav style="text-align:center;margin-top:10px;">
+                     <ul class="pagination" style="justify-content:center;">
+                        {% if selected_page.has_previous %}
+                        <li><a href="?page={{selected_page.previous_page_number}}">&laquo;</a></li>
+                        {% endif %}
+                        {% for num in selected_page.paginator.page_range %}
+                        <li class="{% if num == selected_page.number %}active{% endif %}">
+                           <a href="?page={{num}}">{{num}}</a>
+                        </li>
+                        {% endfor %}
+                        {% if selected_page.has_next %}
+                        <li><a href="?page={{selected_page.next_page_number}}">&raquo;</a></li>
+                        {% endif %}
+                     </ul>
+                  </nav>
+               </div>
+
+               {% else %}
+
+               <!-- NO RESULTS -->
+               <div class="col-sm-12">
+                  <div style="
+                     padding:40px;
+                     background:#fff;
+                     border-radius:8px;
+                     text-align:center;
+                     box-shadow:0 2px 12px rgba(0,0,0,0.05);
+                  ">
+                     <h3 style="margin-bottom:10px;">😕 No products found</h3>
+                     <p style="color:#777;">
+                        No results for "<strong>{{ request.GET.search }}</strong>"
+                     </p>
+                     <a href="{% url 'store' %}"
+                        class="btn btn-warning"
+                        style="margin-top:10px;border-radius:6px;">
+                        View All Products
+                     </a>
+                  </div>
+               </div>
+
+               {% endif %}
+               </div>
+
+            </div>
+         </div>
+
+      </div>
+   </div>
+</section>
+
+{% endblock content %}

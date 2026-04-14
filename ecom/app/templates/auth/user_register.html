@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Register{% endblock title %}
+
+{% block content %}
+<section id="form"><!-- form -->
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4 col-sm-offset-4">
+        <div class="signup-form"><!-- signup form -->
+          <h2>Create your account</h2>
+
+          <form method="post" action="{% url 'user_register' %}">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <input type="text" name="username" placeholder="Username" required />
+
+            <!-- Email -->
+            <input type="email" name="email" placeholder="Email Address" required />
+
+            <!-- Password -->
+            <div style="position:relative;">
+              <input type="password" name="password1" id="regPassword" placeholder="Password" required />
+              <span
+                onclick="togglePassword('regPassword', this)"
+                style="position:absolute;right:12px;top:12px;cursor:pointer;font-size:14px;">
+                👁
+              </span>
+            </div>
+
+            <!-- Confirm Password -->
+            <div style="position:relative;">
+              <input type="password" name="password2" id="regConfirmPassword" placeholder="Confirm Password" required />
+              <span
+                onclick="togglePassword('regConfirmPassword', this)"
+                style="position:absolute;right:12px;top:12px;cursor:pointer;font-size:14px;">
+                👁
+              </span>
+            </div>
+
+            <button type="submit" class="btn btn-default">Register</button>
+          </form>
+
+          <!-- Login link -->
+          <p style="margin-top:15px;text-align:center;">
+            Already login? <a href="{% url 'user_login' %}">Go Login</a>
+          </p>
+        </div><!-- /signup form -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Password Toggle Script -->
+<script>
+function togglePassword(inputId, el) {
+  const input = document.getElementById(inputId);
+  if (input.type === "password") {
+    input.type = "text";
+    el.innerText = "🙈";
+  } else {
+    input.type = "password";
+    el.innerText = "👁";
+  }
+}
+</script>
+{% endblock content %}

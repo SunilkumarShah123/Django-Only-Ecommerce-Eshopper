@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+<section id="form"><!-- form -->
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4 col-sm-offset-4">
+        <div class="login-form"><!-- login form -->
+          <h2>Login to your account</h2>
+
+          <form method="post" action="{% url 'user_login' %}">
+            {% csrf_token %}
+
+            <!-- Email -->
+            <input type="email" name="email" placeholder="Email Address" required />
+
+            <!-- Password -->
+            <div style="position:relative;">
+              <input type="password" name="password" id="loginPassword" placeholder="Password" required />
+              <span
+                onclick="togglePassword('loginPassword', this)"
+                style="position:absolute;right:12px;top:12px;cursor:pointer;font-size:14px;">
+                👁
+              </span>
+            </div>
+              <input type="hidden" name="next" value="{{ request.GET.next }}" />
+            <!-- Options -->
+            <span style="display:flex;justify-content:space-between;align-items:center;">
+              <label>
+                <input type="checkbox" name="remember_me" class="checkbox">
+                Stay signed in
+              </label>
+              <a href="{% url 'password_reset' %}" style="font-size:13px;">Forgot password?</a>
+            </span>
+
+            <button type="submit" class="btn btn-default">Login</button>
+          </form>
+
+          <!-- Social Login -->
+          <div style="margin-top:15px;text-align:center;">
+            <p>OR login with</p>
+            <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-default" style="width:100%;margin-bottom:5px;">
+              <i class="fa fa-google"></i> Google
+            </a>
+            <a href="{% url 'social:begin' 'github' %}" class="btn btn-default" style="width:100%;">
+              <i class="fa fa-github"></i> GitHub
+            </a>
+          </div>
+
+          <!-- Register link -->
+          <p style="margin-top:15px;text-align:center;">
+            Not signed? <a href="{% url 'user_register' %}">Go Register</a>
+          </p>
+        </div><!-- /login form -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Password Toggle Script -->
+<script>
+function togglePassword(inputId, el) {
+  const input = document.getElementById(inputId);
+  if (input.type === "password") {
+    input.type = "text";
+    el.innerText = "🙈";
+  } else {
+    input.type = "password";
+    el.innerText = "👁";
+  }
+}
+</script>
+{% endblock content %}

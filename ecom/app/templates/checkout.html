@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Checkout | E-Shopper{% endblock title %}
+
+{% block content %}
+<section id="checkout" style="background:#f8f9fa;padding:40px 0;">
+  <div class="container">
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumbs mb-4">
+      <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">Checkout</li>
+      </ol>
+    </div>
+
+    {% if request.session.cart %}
+
+    <!-- ================= CHECKOUT CONTENT ================= -->
+    <div class="row">
+
+      <!-- LEFT : ORDER SUMMARY -->
+      <div class="col-sm-8">
+        <div style="background:#fff;padding:25px;border-radius:6px;box-shadow:0 4px 10px rgba(0,0,0,.08);">
+
+          <h4 style="border-bottom:2px solid #FE980F;display:inline-block;margin-bottom:20px;">
+            Order Summary
+          </h4>
+
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th class="text-center">Qty</th>
+                <th class="text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key, value in request.session.cart.items %}
+              <tr>
+                <td>{{ value.name }}</td>
+                <td class="text-center">{{ value.quantity }}</td>
+                <td class="text-right">Rs.{{ value.total_price }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <div class="text-right">
+            <p>Sub Total: <strong>Rs.{{ cart_total_amount }}</strong></p>
+            <p>Tax: <strong>Rs.{{ tax }}</strong></p>
+            <h4>Total: <strong>Rs.{{ grand_total }}</strong></h4>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT : PAYMENT -->
+      <div class="col-sm-4">
+        <div style="background:#fff;padding:25px;border-radius:6px;box-shadow:0 4px 10px rgba(0,0,0,.08);">
+
+          <h4 style="border-bottom:2px solid #FE980F;display:inline-block;margin-bottom:20px;">
+            Payment Method
+          </h4>
+
+      
+            <label style="display:block;">
+              <input type="radio" name="payment_method">
+              Pay with Khalti
+            </label>
+          </div>
+
+          <button
+            class="btn btn-block"
+            data-toggle="modal"
+            data-target="#orderModal"
+            style="margin-top:20px;background:#FE980F;color:#fff;font-weight:600;padding:12px;">
+            Place Order
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+
+    {% else %}
+
+    <!-- ================= EMPTY CART MESSAGE ================= -->
+    <div style="
+      background:#fff;
+      padding:50px;
+      text-align:center;
+      border-radius:6px;
+      box-shadow:0 4px 10px rgba(0,0,0,.08);
+    ">
+      <i class="fa fa-shopping-cart" style="font-size:60px;color:#ccc;"></i>
+
+      <h3 style="margin-top:20px;">Your cart is empty</h3>
+      <p style="color:#777;margin-bottom:25px;">
+        You need to add products to your cart before proceeding to checkout.
+      </p>
+
+      <a href="{% url 'store' %}" class="btn"
+         style="background:#FE980F;color:#fff;padding:12px 30px;font-weight:600;">
+        Go to Store
+      </a>
+    </div>
+
+    {% endif %}
+  </div>
+</section>
+
+<!-- ================= ORDER DETAILS MODAL ================= -->
+<div class="modal fade" id="orderModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title">Order Details</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <form method="post" action="{% url 'do_order' %}" id="contactForm">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-sm-6">
+              <input type="text" name="full_name" class="form-control mb-3" placeholder="Full Name" required>
+            </div>
+            <div class="col-sm-6">
+              <input type="email" name="email" class="form-control mb-3" placeholder="Email Address" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <input type="tel" name="phone" class="form-control mb-3" placeholder="Phone Number" id="phone" required>
+            </div>
+            <div class="col-sm-6">
+              <input type="text" name="city" class="form-control mb-3" placeholder="City" required>
+            </div>
+          </div>
+
+          <input type="text" name="full_address" class="form-control mb-3" placeholder="Full Address" required>
+          <textarea class="form-control" name="order_notes" rows="4" placeholder="Order notes (optional)"></textarea>
+           <div class="modal-footer">
+    <button type="submit" class="btn btn-success">
+      Confirm Order
+    </button>
+  </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Cancel
+        </button>
+        
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
